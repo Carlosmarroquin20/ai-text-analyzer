@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Text Analyzer - Advanced NLP Tool</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header Section -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <i class="fas fa-brain"></i>
+                <span>AI Text Analyzer</span>
+            </div>
+            <nav class="nav">
+                <a href="#analyzer" class="nav-link active">Analyzer</a>
+                <a href="#about" class="nav-link">About</a>
+                <a href="#features" class="nav-link">Features</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="hero-title">
+                    <span class="gradient-text">AI-Powered</span> Text Analysis
+                </h1>
+                <p class="hero-subtitle">
+                    Harness the power of advanced Natural Language Processing to analyze, 
+                    understand, and extract insights from your text instantly.
+                </p>
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <i class="fas fa-bolt"></i>
+                        <span>Lightning Fast</span>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>100% Private</span>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-check-circle"></i>
+                        <span>High Accuracy</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Analysis Section -->
+    <section class="analyzer-section" id="analyzer">
+        <div class="container">
+            <div class="analyzer-grid">
+                <!-- Input Panel -->
+                <div class="input-panel panel">
+                    <div class="panel-header">
+                        <h2><i class="fas fa-edit"></i> Input Text</h2>
+                        <button class="btn-clear" id="clearBtn">
+                            <i class="fas fa-trash"></i> Clear
+                        </button>
+                    </div>
+                    <textarea 
+                        id="inputText" 
+                        class="text-input" 
+                        placeholder="Paste or type your text here for AI analysis...
+
+Examples:
+• Product reviews
+• Customer feedback
+• Social media posts
+• Articles or essays
+• Any text you want to analyze"
+                    ></textarea>
+                    <div class="input-info">
+                        <span id="charCount">0</span> characters | 
+                        <span id="wordCount">0</span> words
+                    </div>
+                </div>
+
+                <!-- Control Panel -->
+                <div class="control-panel panel">
+                    <div class="panel-header">
+                        <h2><i class="fas fa-sliders-h"></i> Analysis Options</h2>
+                    </div>
+                    
+                    <div class="analysis-options">
+                        <div class="option-card" data-analysis="sentiment">
+                            <div class="option-icon">
+                                <i class="fas fa-smile"></i>
+                            </div>
+                            <div class="option-content">
+                                <h3>Sentiment Analysis</h3>
+                                <p>Detect emotional tone and polarity</p>
+                            </div>
+                            <div class="option-check">
+                                <input type="checkbox" id="sentimentCheck" checked>
+                                <label for="sentimentCheck"></label>
+                            </div>
+                        </div>
+
+                        <div class="option-card" data-analysis="keywords">
+                            <div class="option-icon">
+                                <i class="fas fa-key"></i>
+                            </div>
+                            <div class="option-content">
+                                <h3>Keyword Extraction</h3>
+                                <p>Identify important terms and phrases</p>
+                            </div>
+                            <div class="option-check">
+                                <input type="checkbox" id="keywordsCheck" checked>
+                                <label for="keywordsCheck"></label>
+                            </div>
+                        </div>
+
+                        <div class="option-card" data-analysis="summary">
+                            <div class="option-icon">
+                                <i class="fas fa-file-alt"></i>
+                            </div>
+                            <div class="option-content">
+                                <h3>Text Summarization</h3>
+                                <p>Generate concise summary</p>
+                            </div>
+                            <div class="option-check">
+                                <input type="checkbox" id="summaryCheck" checked>
+                                <label for="summaryCheck"></label>
+                            </div>
+                        </div>
+
+                        <div class="option-card" data-analysis="readability">
+                            <div class="option-icon">
+                                <i class="fas fa-book-reader"></i>
+                            </div>
+                            <div class="option-content">
+                                <h3>Readability Score</h3>
+                                <p>Measure text complexity</p>
+                            </div>
+                            <div class="option-check">
+                                <input type="checkbox" id="readabilityCheck" checked>
+                                <label for="readabilityCheck"></label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="btn-analyze" id="analyzeBtn">
+                        <i class="fas fa-magic"></i>
+                        <span>Analyze Text</span>
+                        <div class="btn-shine"></div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Results Panel -->
+            <div class="results-panel panel" id="resultsPanel" style="display: none;">
+                <div class="panel-header">
+                    <h2><i class="fas fa-chart-line"></i> Analysis Results</h2>
+                    <button class="btn-export" id="exportBtn">
+                        <i class="fas fa-download"></i> Export
+                    </button>
+                </div>
+
+                <div class="results-grid" id="resultsContainer">
+                    <!-- Results will be dynamically inserted here -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features-section" id="features">
+        <div class="container">
+            <h2 class="section-title">Powerful Features</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <h3>AI-Powered Engine</h3>
+                    <p>Advanced machine learning algorithms for accurate text analysis</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-tachometer-alt"></i>
+                    </div>
+                    <h3>Real-Time Processing</h3>
+                    <p>Instant analysis with no waiting time</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-language"></i>
+                    </div>
+                    <h3>Multi-Language Support</h3>
+                    <p>Supports various languages and contexts</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <h3>Privacy First</h3>
+                    <p>Your data stays secure and private</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 AI Text Analyzer. Advanced NLP Technology.</p>
+            <div class="footer-links">
+                <a href="#privacy">Privacy Policy</a>
+                <a href="#terms">Terms of Service</a>
+                <a href="#contact">Contact</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner">
+            <div class="spinner"></div>
+            <p>Analyzing your text...</p>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/ai-engine.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
