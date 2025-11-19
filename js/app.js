@@ -27,6 +27,10 @@ const readabilityCheck = document.getElementById('readabilityCheck');
 let currentResults = null;
 let currentText = '';
 
+// History Management
+const MAX_HISTORY_ITEMS = 10;
+let analysisHistory = [];
+
 /* ========================================
    Event Listeners
    ======================================== */
@@ -42,6 +46,26 @@ clearBtn.addEventListener('click', clearAll);
 
 // Export button click
 exportBtn.addEventListener('click', exportResults);
+
+// History button click
+const historyBtn = document.getElementById('historyBtn');
+const historyPanel = document.getElementById('historyPanel');
+const closeHistoryBtn = document.getElementById('closeHistoryBtn');
+const clearHistoryBtn = document.getElementById('clearHistoryBtn');
+
+if (historyBtn) {
+    historyBtn.addEventListener('click', toggleHistoryPanel);
+}
+
+if (closeHistoryBtn) {
+    closeHistoryBtn.addEventListener('click', () => {
+        historyPanel.classList.remove('active');
+    });
+}
+
+if (clearHistoryBtn) {
+    clearHistoryBtn.addEventListener('click', clearHistory);
+}
 
 // Handle Enter key in textarea (Ctrl+Enter to analyze)
 inputText.addEventListener('keydown', (e) => {
@@ -145,7 +169,10 @@ async function performAnalysis() {
         setTimeout(() => {
             resultsPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }, 300);
-        
+
+        // Add to history
+        addToHistory(text, results);
+
         showNotification('Analysis completed successfully!', 'success');
         
     } catch (error) {
@@ -456,6 +483,188 @@ function showNotification(message, type = 'info') {
 }
 
 /* ========================================
+   History Management Functions
+   ======================================== */
+
+/**
+ * Load history from localStorage on page load
+ */
+function loadHistoryFromStorage() {
+    try {
+        const savedHistory = localStorage.getItem('textAnalysisHistory');
+        if (savedHistory) {
+            analysisHistory = JSON.parse(savedHistory);
+        }
+    } catch (error) {
+        console.error('Error loading history:', error);
+        analysisHistory = [];
+    }
+}
+
+/**
+ * Save history to localStorage
+ */
+function saveHistoryToStorage() {
+    try {
+        localStorage.setItem('textAnalysisHistory', JSON.stringify(analysisHistory));
+    } catch (error) {
+        console.error('Error saving history:', error);
+        showNotification('Failed to save to history', 'error');
+    }
+}
+
+/**
+ * Add analysis to history
+ * @param {string} text - Original text
+ * @param {Object} results - Analysis results
+ */
+function addToHistory(text, results) {
+    const historyItem = {
+        id: Date.now(),
+        timestamp: new Date().toISOString(),
+        text: text,
+        textPreview: text.substring(0, 100) + (text.length > 100 ? '...' : ''),
+        results: results,
+        wordCount: text.trim().split(/\s+/).length,
+        charCount: text.length
+    };
+
+    // Add to beginning of array
+    analysisHistory.unshift(historyItem);
+
+    // Keep only last MAX_HISTORY_ITEMS
+    if (analysisHistory.length > MAX_HISTORY_ITEMS) {
+        analysisHistory = analysisHistory.slice(0, MAX_HISTORY_ITEMS);
+    }
+
+    saveHistoryToStorage();
+    updateHistoryDisplay();
+}
+
+/**
+ * Load analysis from history
+ * @param {number} id - History item ID
+ */
+function loadFromHistory(id) {
+    const historyItem = analysisHistory.find(item => item.id === id);
+
+    if (!historyItem) {
+        showNotification('History item not found', 'error');
+        return;
+    }
+
+    // Load the text
+    inputText.value = historyItem.text;
+    updateCounts();
+
+    // Load the results
+    currentResults = historyItem.results;
+    currentText = historyItem.text;
+    displayResults(historyItem.results);
+
+    // Show results panel
+    resultsPanel.style.display = 'block';
+
+    // Close history panel
+    historyPanel.classList.remove('active');
+
+    // Scroll to results
+    setTimeout(() => {
+        resultsPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 300);
+
+    showNotification('Analysis loaded from history', 'success');
+}
+
+/**
+ * Delete item from history
+ * @param {number} id - History item ID
+ */
+function deleteFromHistory(id) {
+    analysisHistory = analysisHistory.filter(item => item.id !== id);
+    saveHistoryToStorage();
+    updateHistoryDisplay();
+    showNotification('Item deleted from history', 'success');
+}
+
+/**
+ * Clear all history
+ */
+function clearHistory() {
+    if (analysisHistory.length === 0) {
+        showNotification('History is already empty', 'warning');
+        return;
+    }
+
+    if (confirm('Are you sure you want to clear all history? This cannot be undone.')) {
+        analysisHistory = [];
+        saveHistoryToStorage();
+        updateHistoryDisplay();
+        showNotification('History cleared', 'success');
+    }
+}
+
+/**
+ * Toggle history panel visibility
+ */
+function toggleHistoryPanel() {
+    historyPanel.classList.toggle('active');
+    updateHistoryDisplay();
+}
+
+/**
+ * Update history display
+ */
+function updateHistoryDisplay() {
+    const historyContainer = document.getElementById('historyContainer');
+
+    if (!historyContainer) return;
+
+    if (analysisHistory.length === 0) {
+        historyContainer.innerHTML = `
+            <div class="empty-history">
+                <i class="fas fa-history" style="font-size: 3rem; color: var(--text-secondary); margin-bottom: 1rem;"></i>
+                <p>No analysis history yet</p>
+                <p style="font-size: 0.875rem; color: var(--text-secondary);">Your analyzed texts will appear here</p>
+            </div>
+        `;
+        return;
+    }
+
+    historyContainer.innerHTML = analysisHistory.map(item => {
+        const date = new Date(item.timestamp);
+        const dateStr = date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+
+        return `
+            <div class="history-item" data-id="${item.id}">
+                <div class="history-item-header">
+                    <div class="history-item-date">
+                        <i class="fas fa-clock"></i>
+                        ${dateStr}
+                    </div>
+                    <div class="history-item-actions">
+                        <button class="history-load-btn" onclick="loadFromHistory(${item.id})" title="Load this analysis">
+                            <i class="fas fa-upload"></i>
+                        </button>
+                        <button class="history-delete-btn" onclick="deleteFromHistory(${item.id})" title="Delete from history">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="history-item-preview">
+                    ${item.textPreview}
+                </div>
+                <div class="history-item-stats">
+                    <span><i class="fas fa-font"></i> ${item.charCount} chars</span>
+                    <span><i class="fas fa-text-width"></i> ${item.wordCount} words</span>
+                    ${item.results.sentiment ? `<span><i class="fas fa-smile"></i> ${item.results.sentiment.label}</span>` : ''}
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+/* ========================================
    Sample Text Examples
    ======================================== */
 
@@ -472,6 +681,11 @@ const sampleTexts = [
 //     inputText.value = randomSample;
 //     updateCounts();
 // });
+
+// Load history from localStorage on page load
+window.addEventListener('load', () => {
+    loadHistoryFromStorage();
+});
 
 /* ========================================
    Keyboard Shortcuts Info
