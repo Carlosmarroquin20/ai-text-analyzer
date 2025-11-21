@@ -92,20 +92,26 @@ document.querySelectorAll('.option-card').forEach(card => {
     });
 });
 
-// Smooth scroll for navigation links
+// Smooth scroll for same-page navigation links only
 document.querySelectorAll('.nav-link').forEach(link => {
     link.addEventListener('click', function(e) {
-        e.preventDefault();
-        const targetId = this.getAttribute('href');
-        const targetSection = document.querySelector(targetId);
-        
-        if (targetSection) {
-            targetSection.scrollIntoView({ behavior: 'smooth' });
-            
-            // Update active nav link
-            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-            this.classList.add('active');
+        const href = this.getAttribute('href');
+
+        // Only prevent default and smooth scroll for same-page anchors
+        if (href.startsWith('#')) {
+            e.preventDefault();
+            const targetId = href;
+            const targetSection = document.querySelector(targetId);
+
+            if (targetSection) {
+                targetSection.scrollIntoView({ behavior: 'smooth' });
+
+                // Update active nav link
+                document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                this.classList.add('active');
+            }
         }
+        // For external links (dashboard.html, index.html), let them navigate normally
     });
 });
 
