@@ -616,9 +616,14 @@ body {
     color: var(--text-secondary);
 }
 
-/* Export Button */
-.btn-export {
-    background: var(--success-color);
+/* Export Buttons */
+.export-buttons {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.btn-export,
+.btn-export-pdf {
     border: none;
     color: white;
     padding: 0.5rem 1rem;
@@ -628,12 +633,28 @@ body {
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    font-weight: 500;
+    font-size: 0.875rem;
+}
+
+.btn-export {
+    background: var(--success-color);
 }
 
 .btn-export:hover {
     background: #059669;
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(16, 185, 129, 0.4);
+}
+
+.btn-export-pdf {
+    background: var(--danger-color);
+}
+
+.btn-export-pdf:hover {
+    background: #dc2626;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(239, 68, 68, 0.4);
 }
 
 /* ========================================

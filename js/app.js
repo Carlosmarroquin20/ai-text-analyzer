@@ -50,6 +50,12 @@ clearBtn.addEventListener('click', clearAll);
 // Export button click
 exportBtn.addEventListener('click', exportResults);
 
+// Export PDF button click
+const exportPdfBtn = document.getElementById('exportPdfBtn');
+if (exportPdfBtn) {
+    exportPdfBtn.addEventListener('click', exportResultsAsPDF);
+}
+
 // History button click
 const historyBtn = document.getElementById('historyBtn');
 const historyPanel = document.getElementById('historyPanel');
@@ -405,7 +411,7 @@ function exportResults() {
         showNotification('No analysis results to export', 'warning');
         return;
     }
-    
+
     try {
         const jsonData = aiEngine.exportResults(currentResults, currentText);
         const blob = new Blob([jsonData], { type: 'application/json' });
@@ -417,11 +423,170 @@ function exportResults() {
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
-        
+
         showNotification('Results exported successfully!', 'success');
     } catch (error) {
         console.error('Export error:', error);
         showNotification('Failed to export results', 'error');
+    }
+}
+
+/**
+ * Export results to PDF file
+ */
+function exportResultsAsPDF() {
+    if (!currentResults || !currentText) {
+        showNotification('No analysis results to export', 'warning');
+        return;
+    }
+
+    try {
+        // Access jsPDF from window object
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+
+        // Title
+        doc.setFontSize(20);
+        doc.setTextColor(99, 102, 241);
+        doc.text('AI Text Analysis Report', 20, 20);
+
+        // Date
+        doc.setFontSize(10);
+        doc.setTextColor(128, 128, 128);
+        doc.text(`Generated: ${new Date().toLocaleString()}`, 20, 28);
+
+        let yPosition = 40;
+
+        // Original Text Section
+        doc.setFontSize(14);
+        doc.setTextColor(0, 0, 0);
+        doc.text('Original Text:', 20, yPosition);
+        yPosition += 8;
+
+        doc.setFontSize(10);
+        doc.setTextColor(64, 64, 64);
+        const textLines = doc.splitTextToSize(currentText, 170);
+        const maxTextLines = 15; // Limit text preview
+        const displayLines = textLines.slice(0, maxTextLines);
+        doc.text(displayLines, 20, yPosition);
+        yPosition += (displayLines.length * 5) + 10;
+
+        if (textLines.length > maxTextLines) {
+            doc.setFontSize(9);
+            doc.setTextColor(128, 128, 128);
+            doc.text('(Text truncated for preview)', 20, yPosition);
+            yPosition += 8;
+        }
+
+        // Sentiment Analysis
+        if (currentResults.sentiment) {
+            doc.setFontSize(14);
+            doc.setTextColor(0, 0, 0);
+            doc.text('Sentiment Analysis:', 20, yPosition);
+            yPosition += 8;
+
+            doc.setFontSize(11);
+            doc.setTextColor(64, 64, 64);
+            doc.text(`Sentiment: ${currentResults.sentiment.label}`, 25, yPosition);
+            yPosition += 6;
+            doc.text(`Score: ${(parseFloat(currentResults.sentiment.score) * 100).toFixed(0)}%`, 25, yPosition);
+            yPosition += 6;
+            doc.text(`Confidence: ${currentResults.sentiment.confidence}%`, 25, yPosition);
+            yPosition += 6;
+            doc.text(`Positive Words: ${currentResults.sentiment.positiveWords}`, 25, yPosition);
+            yPosition += 6;
+            doc.text(`Negative Words: ${currentResults.sentiment.negativeWords}`, 25, yPosition);
+            yPosition += 10;
+        }
+
+        // Keywords
+        if (currentResults.keywords && currentResults.keywords.length > 0) {
+            doc.setFontSize(14);
+            doc.setTextColor(0, 0, 0);
+            doc.text('Key Terms:', 20, yPosition);
+            yPosition += 8;
+
+            doc.setFontSize(10);
+            doc.setTextColor(64, 64, 64);
+            const keywordsText = currentResults.keywords
+                .map(kw => `${kw.word} (${kw.frequency})`)
+                .join(', ');
+            const keywordLines = doc.splitTextToSize(keywordsText, 170);
+            doc.text(keywordLines, 25, yPosition);
+            yPosition += (keywordLines.length * 5) + 10;
+        }
+
+        // Summary
+        if (currentResults.summary) {
+            // Check if we need a new page
+            if (yPosition > 240) {
+                doc.addPage();
+                yPosition = 20;
+            }
+
+            doc.setFontSize(14);
+            doc.setTextColor(0, 0, 0);
+            doc.text('AI Summary:', 20, yPosition);
+            yPosition += 8;
+
+            doc.setFontSize(10);
+            doc.setTextColor(64, 64, 64);
+            const summaryLines = doc.splitTextToSize(currentResults.summary, 170);
+            doc.text(summaryLines, 25, yPosition);
+            yPosition += (summaryLines.length * 5) + 10;
+        }
+
+        // Readability
+        if (currentResults.readability) {
+            // Check if we need a new page
+            if (yPosition > 240) {
+                doc.addPage();
+                yPosition = 20;
+            }
+
+            doc.setFontSize(14);
+            doc.setTextColor(0, 0, 0);
+            doc.text('Readability Analysis:', 20, yPosition);
+            yPosition += 8;
+
+            doc.setFontSize(11);
+            doc.setTextColor(64, 64, 64);
+            doc.text(`Flesch Score: ${currentResults.readability.fleschScore}`, 25, yPosition);
+            yPosition += 6;
+            doc.text(`Reading Level: ${currentResults.readability.level}`, 25, yPosition);
+            yPosition += 6;
+            doc.text(`Grade Level: ${currentResults.readability.grade}`, 25, yPosition);
+            yPosition += 6;
+            doc.text(`Sentences: ${currentResults.readability.sentenceCount}`, 25, yPosition);
+            yPosition += 6;
+            doc.text(`Words: ${currentResults.readability.wordCount}`, 25, yPosition);
+            yPosition += 6;
+            doc.text(`Avg Words/Sentence: ${currentResults.readability.avgWordsPerSentence}`, 25, yPosition);
+            yPosition += 6;
+            doc.text(`Avg Syllables/Word: ${currentResults.readability.avgSyllablesPerWord}`, 25, yPosition);
+            yPosition += 10;
+        }
+
+        // Footer
+        doc.setFontSize(8);
+        doc.setTextColor(128, 128, 128);
+        const pageCount = doc.internal.getNumberOfPages();
+        for (let i = 1; i <= pageCount; i++) {
+            doc.setPage(i);
+            doc.text(
+                `Generated by AI Text Analyzer - Page ${i} of ${pageCount}`,
+                doc.internal.pageSize.width / 2,
+                doc.internal.pageSize.height - 10,
+                { align: 'center' }
+            );
+        }
+
+        // Save the PDF
+        doc.save(`text-analysis-${Date.now()}.pdf`);
+        showNotification('PDF exported successfully!', 'success');
+    } catch (error) {
+        console.error('PDF export error:', error);
+        showNotification('Failed to export PDF', 'error');
     }
 }
 

@@ -167,9 +167,14 @@ Examples:
             <div class="results-panel panel" id="resultsPanel" style="display: none;">
                 <div class="panel-header">
                     <h2><i class="fas fa-chart-line"></i> Analysis Results</h2>
-                    <button class="btn-export" id="exportBtn">
-                        <i class="fas fa-download"></i> Export
-                    </button>
+                    <div class="export-buttons">
+                        <button class="btn-export-pdf" id="exportPdfBtn" title="Export as PDF">
+                            <i class="fas fa-file-pdf"></i> PDF
+                        </button>
+                        <button class="btn-export" id="exportBtn" title="Export as JSON">
+                            <i class="fas fa-download"></i> JSON
+                        </button>
+                    </div>
                 </div>
 
                 <div class="results-grid" id="resultsContainer">
@@ -257,6 +262,7 @@ Examples:
     </div>
 
     <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="js/ai-engine.js"></script>
     <script src="js/app.js"></script>
 </body>
