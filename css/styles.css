@@ -27,6 +27,20 @@
     --shadow-glow: 0 0 20px rgba(99, 102, 241, 0.4);
 }
 
+/* Light Theme Variables */
+[data-theme="light"] {
+    --dark-bg: #ffffff;
+    --card-bg: #f8fafc;
+    --card-hover: #e2e8f0;
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
+    --border-color: #e2e8f0;
+    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.07);
+    --shadow-lg: 0 10px 20px rgba(0, 0, 0, 0.1);
+    --shadow-glow: 0 0 20px rgba(99, 102, 241, 0.15);
+}
+
 /* Reset and Base Styles */
 * {
     margin: 0;
@@ -40,6 +54,14 @@ body {
     color: var(--text-primary);
     line-height: 1.6;
     overflow-x: hidden;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Smooth transitions for theme switching */
+*,
+*::before,
+*::after {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
 
 .container {
@@ -1084,4 +1106,62 @@ body {
 
 .hidden {
     display: none;
+}
+
+/* ========================================
+   Theme Toggle Switch
+   ======================================== */
+
+.theme-toggle {
+    position: relative;
+    width: 60px;
+    height: 30px;
+    background: var(--border-color);
+    border-radius: 50px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    border: none;
+    outline: none;
+    padding: 0;
+}
+
+.theme-toggle:hover {
+    background: var(--card-hover);
+}
+
+.theme-toggle-slider {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 24px;
+    height: 24px;
+    background: white;
+    border-radius: 50%;
+    transition: transform 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.theme-toggle-slider i {
+    font-size: 0.75rem;
+    color: #f59e0b;
+}
+
+.theme-toggle.active .theme-toggle-slider {
+    transform: translateX(30px);
+}
+
+.theme-toggle.active .theme-toggle-slider i {
+    color: #6366f1;
+}
+
+/* Light theme adjustments for hero */
+[data-theme="light"] .hero {
+    background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+}
+
+[data-theme="light"] .hero::before {
+    background: radial-gradient(circle, rgba(99, 102, 241, 0.05) 0%, transparent 70%);
 }

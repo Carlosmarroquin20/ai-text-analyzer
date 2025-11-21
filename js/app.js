@@ -31,6 +31,9 @@ let currentText = '';
 const MAX_HISTORY_ITEMS = 10;
 let analysisHistory = [];
 
+// Theme Management
+let currentTheme = 'dark';
+
 /* ========================================
    Event Listeners
    ======================================== */
@@ -65,6 +68,12 @@ if (closeHistoryBtn) {
 
 if (clearHistoryBtn) {
     clearHistoryBtn.addEventListener('click', clearHistory);
+}
+
+// Theme toggle button click
+const themeToggle = document.getElementById('themeToggle');
+if (themeToggle) {
+    themeToggle.addEventListener('click', toggleTheme);
 }
 
 // Handle Enter key in textarea (Ctrl+Enter to analyze)
@@ -665,6 +674,67 @@ function updateHistoryDisplay() {
 }
 
 /* ========================================
+   Theme Management Functions
+   ======================================== */
+
+/**
+ * Load theme from localStorage on page load
+ */
+function loadThemeFromStorage() {
+    try {
+        const savedTheme = localStorage.getItem('appTheme');
+        if (savedTheme) {
+            currentTheme = savedTheme;
+            applyTheme(currentTheme);
+        }
+    } catch (error) {
+        console.error('Error loading theme:', error);
+    }
+}
+
+/**
+ * Apply theme to document
+ * @param {string} theme - Theme name ('dark' or 'light')
+ */
+function applyTheme(theme) {
+    const themeToggleBtn = document.getElementById('themeToggle');
+    const icon = themeToggleBtn?.querySelector('i');
+
+    if (theme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+        themeToggleBtn?.classList.add('active');
+        if (icon) {
+            icon.className = 'fas fa-moon';
+        }
+    } else {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        themeToggleBtn?.classList.remove('active');
+        if (icon) {
+            icon.className = 'fas fa-sun';
+        }
+    }
+}
+
+/**
+ * Toggle between light and dark theme
+ */
+function toggleTheme() {
+    currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    applyTheme(currentTheme);
+
+    // Save to localStorage
+    try {
+        localStorage.setItem('appTheme', currentTheme);
+    } catch (error) {
+        console.error('Error saving theme:', error);
+    }
+
+    // Show notification
+    const themeLabel = currentTheme === 'dark' ? 'Dark' : 'Light';
+    showNotification(`${themeLabel} theme activated`, 'success');
+}
+
+/* ========================================
    Sample Text Examples
    ======================================== */
 
@@ -682,9 +752,10 @@ const sampleTexts = [
 //     updateCounts();
 // });
 
-// Load history from localStorage on page load
+// Load history and theme from localStorage on page load
 window.addEventListener('load', () => {
     loadHistoryFromStorage();
+    loadThemeFromStorage();
 });
 
 /* ========================================
