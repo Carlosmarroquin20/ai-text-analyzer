@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - AI Text Analyzer</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+    <!-- Header Section -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <i class="fas fa-brain"></i>
+                <span>AI Text Analyzer</span>
+            </div>
+            <nav class="nav">
+                <a href="index.html" class="nav-link" data-page="index">Analyzer</a>
+                <a href="dashboard.html" class="nav-link active" data-page="dashboard">Dashboard</a>
+                <a href="index.html#features" class="nav-link" data-page="features">Features</a>
+                <button class="theme-toggle" id="themeToggle" title="Toggle theme">
+                    <div class="theme-toggle-slider">
+                        <i class="fas fa-sun"></i>
+                    </div>
+                </button>
+                <button class="nav-btn" id="historyBtn" title="View analysis history">
+                    <i class="fas fa-history"></i>
+                    <span>History</span>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Dashboard Hero -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="hero-title">
+                    <span class="gradient-text">Analytics</span> Dashboard
+                </h1>
+                <p class="hero-subtitle">
+                    Comprehensive insights and statistics from all your text analyses
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dashboard Section -->
+    <section class="dashboard-section">
+        <div class="container">
+            <!-- Stats Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-value" id="totalAnalyses">0</div>
+                        <div class="stat-label">Total Analyses</div>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                        <i class="fas fa-font"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-value" id="totalWords">0</div>
+                        <div class="stat-label">Total Words Analyzed</div>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                        <i class="fas fa-smile"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-value" id="avgSentiment">N/A</div>
+                        <div class="stat-label">Avg Sentiment</div>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">
+                        <i class="fas fa-book-reader"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-value" id="avgReadability">0</div>
+                        <div class="stat-label">Avg Readability</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Grid -->
+            <div class="charts-grid">
+                <!-- Sentiment Distribution -->
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3><i class="fas fa-chart-pie"></i> Sentiment Distribution</h3>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="sentimentChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Analysis Timeline -->
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3><i class="fas fa-chart-line"></i> Analysis Timeline</h3>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="timelineChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Top Keywords -->
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3><i class="fas fa-chart-bar"></i> Top Keywords</h3>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="keywordsChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Readability Scores -->
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3><i class="fas fa-graduation-cap"></i> Readability Trends</h3>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="readabilityChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Empty State -->
+            <div class="empty-dashboard" id="emptyDashboard" style="display: none;">
+                <i class="fas fa-chart-line" style="font-size: 4rem; color: var(--text-secondary); margin-bottom: 1.5rem;"></i>
+                <h2>No Data Yet</h2>
+                <p>Start analyzing texts to see your statistics here!</p>
+                <a href="index.html" class="btn-analyze" style="display: inline-flex; margin-top: 2rem; text-decoration: none;">
+                    <i class="fas fa-magic"></i>
+                    <span>Start Analyzing</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 AI Text Analyzer. Advanced NLP Technology.</p>
+            <div class="footer-links">
+                <a href="#privacy">Privacy Policy</a>
+                <a href="#terms">Terms of Service</a>
+                <a href="#contact">Contact</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- History Panel -->
+    <div class="history-panel" id="historyPanel">
+        <div class="history-panel-header">
+            <h2><i class="fas fa-history"></i> Analysis History</h2>
+            <div class="history-panel-actions">
+                <button class="btn-clear-history" id="clearHistoryBtn" title="Clear all history">
+                    <i class="fas fa-trash-alt"></i> Clear All
+                </button>
+                <button class="btn-close-history" id="closeHistoryBtn" title="Close history panel">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+        <div class="history-panel-content">
+            <div id="historyContainer">
+                <!-- History items will be dynamically inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/dashboard.js"></script>
+</body>
+</html>
