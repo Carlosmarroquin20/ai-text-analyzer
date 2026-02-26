@@ -1,32 +1,61 @@
 # 🧠 AI Text Analyzer
 
-A professional, modern web application for advanced Natural Language Processing (NLP) text analysis powered by AI algorithms.
+A professional, full-stack web application for advanced Natural Language Processing (NLP) text analysis powered by **real AI models** with Python backend.
 
-![Version](https://img.shields.io/badge/version-1.0.0-blue)
+![Version](https://img.shields.io/badge/version-2.0.0-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
 ![HTML5](https://img.shields.io/badge/HTML5-E34F26?logo=html5&logoColor=white)
 ![CSS3](https://img.shields.io/badge/CSS3-1572B6?logo=css3&logoColor=white)
 ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?logo=javascript&logoColor=black)
+![Python](https://img.shields.io/badge/Python-3776AB?logo=python&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-009688?logo=fastapi&logoColor=white)
 
 ## ✨ Features
 
-- **🎭 Sentiment Analysis**: Detect emotional tone and polarity (positive, negative, neutral)
-- **🔑 Keyword Extraction**: Identify the most important terms and phrases
-- **📄 Text Summarization**: Generate concise summaries using extractive methods
-- **📚 Readability Score**: Calculate Flesch Reading Ease scores and grade levels
-- **⚡ Real-time Processing**: Instant analysis with smooth animations
-- **📊 Interactive Results**: Beautiful, professional result cards with detailed metrics
-- **💾 Export Functionality**: Download analysis results as JSON files
-- **🎨 Modern UI/UX**: Sleek, gradient-based design with dark theme
-- **📱 Responsive Design**: Works perfectly on desktop, tablet, and mobile devices
+### Frontend Features
+- **🎭 Sentiment Analysis**: Detect emotional tone with TextBlob AI
+- **🔑 Keyword Extraction**: Extract important terms using spaCy NLP
+- **📄 Text Summarization**: AI-powered extractive summarization
+- **📚 Readability Score**: Calculate Flesch Reading Ease scores
+- **🏷️ Named Entity Recognition (NER)**: Identify people, places, organizations
+- **📊 Interactive Dashboard**: Visual analytics with Chart.js graphs
+- **💾 Export to PDF/JSON**: Professional report generation
+- **📜 Analysis History**: Save and revisit past analyses
+- **🌓 Dark/Light Theme**: Beautiful theme switcher
+- **📱 Responsive Design**: Works on all devices
+
+### Backend Features (NEW! 🚀)
+- **🐍 Python FastAPI**: High-performance REST API
+- **🤖 Real AI Models**: spaCy + TextBlob for accurate NLP
+- **💾 SQLite Database**: Persistent storage of analyses
+- **📊 Statistics API**: Usage analytics and insights
+- **🔄 Auto-fallback**: Uses local engine if backend unavailable
+- **📚 Interactive API Docs**: Swagger/ReDoc documentation
 
 ## 🚀 Getting Started
 
+You can run this project in **two modes**:
+
+### Mode 1: Frontend Only (Quick Start)
+- Just open `index.html` in a browser
+- Uses local JavaScript AI engine
+- No installation required
+
+### Mode 2: Full Stack (Recommended)
+- Frontend + Python backend with real AI models
+- More accurate analysis with spaCy and TextBlob
+- Database storage and advanced features
+
 ### Prerequisites
 
+#### Frontend Only:
 - A modern web browser (Chrome, Firefox, Safari, Edge)
 - Visual Studio Code (recommended) or any text editor
-- No additional software or npm packages required!
+
+#### Full Stack:
+- Everything from Frontend Only
+- **Python 3.8+** installed
+- **pip** package manager
 
 ### Installation
 
@@ -47,38 +76,74 @@ A professional, modern web application for advanced Natural Language Processing 
 3. **Project Structure**
    ```
    ai-text-analyzer/
-   ├── index.html          # Main HTML file
+   ├── index.html           # Main HTML file
+   ├── dashboard.html       # Analytics dashboard
    ├── css/
-   │   └── styles.css      # All styling and animations
+   │   └── styles.css       # All styling and animations
    ├── js/
-   │   ├── ai-engine.js    # AI/NLP processing engine
-   │   └── app.js          # Main application logic
-   └── README.md           # Documentation (this file)
+   │   ├── ai-engine.js     # Local AI/NLP engine
+   │   ├── api-client.js    # Backend API connector
+   │   ├── app.js           # Main application logic
+   │   └── dashboard.js     # Dashboard charts
+   ├── backend/             # Python FastAPI backend
+   │   ├── main.py          # FastAPI server
+   │   ├── requirements.txt # Python dependencies
+   │   ├── start.bat        # Quick start script (Windows)
+   │   └── README.md        # Backend documentation
+   └── README.md            # Main documentation
    ```
 
 ### Running the Application
 
-#### Option 1: Using Live Server (Recommended)
+#### 🎯 Quick Start (Frontend Only)
 
+**Option 1: Using Live Server (Recommended)**
 1. Install the "Live Server" extension in VS Code
 2. Right-click on `index.html`
 3. Select "Open with Live Server"
-4. The app will open in your default browser at `http://localhost:5500`
+4. Open at `http://localhost:5500`
 
-#### Option 2: Direct File Opening
+**Option 2: Direct File Opening**
+1. Double-click `index.html`
+2. Works immediately with local AI engine
 
-1. Simply double-click `index.html`
-2. The app will open in your default browser
-3. Note: Some features work best with a local server
+---
 
-#### Option 3: Using Python's Built-in Server
+#### 🚀 Full Stack (Frontend + Backend)
 
+**Step 1: Start the Backend**
+
+Windows:
 ```bash
-# Python 3
-python -m http.server 8000
-
-# Then open: http://localhost:8000
+cd backend
+start.bat
 ```
+
+macOS/Linux:
+```bash
+cd backend
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+python -m spacy download en_core_web_sm
+python main.py
+```
+
+Backend will start at: **http://localhost:8000**
+API Docs at: **http://localhost:8000/docs**
+
+**Step 2: Start the Frontend**
+
+1. Open `index.html` with Live Server (VS Code)
+2. Or use Python server: `python -m http.server 5500`
+3. Open at `http://localhost:5500`
+
+**Step 3: Verify Connection**
+
+- You should see: "🚀 Backend AI connected!" notification
+- If not, check that backend is running on port 8000
+
+> **Note**: Frontend automatically falls back to local engine if backend is unavailable
 
 ## 📖 How to Use
 

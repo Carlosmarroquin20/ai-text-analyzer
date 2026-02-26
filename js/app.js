@@ -34,6 +34,9 @@ let analysisHistory = [];
 // Theme Management
 let currentTheme = 'dark';
 
+// Backend availability
+let backendAvailable = false;
+
 /* ========================================
    Event Listeners
    ======================================== */
@@ -42,18 +45,27 @@ let currentTheme = 'dark';
 inputText.addEventListener('input', updateCounts);
 
 // Analyze button click
-analyzeBtn.addEventListener('click', performAnalysis);
+analyzeBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    performAnalysis();
+});
 
 // Clear button click
 clearBtn.addEventListener('click', clearAll);
 
 // Export button click
-exportBtn.addEventListener('click', exportResults);
+exportBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    exportResults();
+});
 
 // Export PDF button click
 const exportPdfBtn = document.getElementById('exportPdfBtn');
 if (exportPdfBtn) {
-    exportPdfBtn.addEventListener('click', exportResultsAsPDF);
+    exportPdfBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        exportResultsAsPDF();
+    });
 }
 
 // History button click
@@ -170,36 +182,64 @@ async function performAnalysis() {
     
     // Show loading overlay
     showLoading(true);
-    
-    // Simulate processing delay for better UX
-    await new Promise(resolve => setTimeout(resolve, 1500));
+
+    // Small delay for better UX
+    await new Promise(resolve => setTimeout(resolve, 300));
     
     try {
-        // Perform analysis
-        const results = aiEngine.analyze(text, options);
+        // Perform analysis - use backend if available
+        let results;
+
+        if (backendAvailable && typeof analyzeWithBackend === 'function') {
+            try {
+                results = await analyzeWithBackend(text, options);
+            } catch (backendError) {
+                console.warn('Backend failed, falling back to local engine:', backendError);
+                showNotification('Using local AI engine', 'warning');
+                results = aiEngine.analyze(text, options);
+            }
+        } else {
+            results = aiEngine.analyze(text, options);
+        }
+
         currentResults = results;
         currentText = text;
-        
+
+        console.log('📊 Results received:', results);
+
         // Display results
         displayResults(results);
-        
+
         // Show results panel
         resultsPanel.style.display = 'block';
-        
+        console.log('✅ Results panel shown');
+
+        // Hide loading first
+        showLoading(false);
+
         // Scroll to results
         setTimeout(() => {
             resultsPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }, 300);
+            console.log('📜 Scrolled to results');
+        }, 100);
+
+        // Debug: Check if panel is still visible after 2 seconds
+        setTimeout(() => {
+            console.log('🔍 Panel status after 2s:', {
+                display: resultsPanel.style.display,
+                visible: resultsPanel.offsetHeight > 0,
+                innerHTML: resultsContainer.innerHTML.length
+            });
+        }, 2000);
 
         // Add to history
         addToHistory(text, results);
 
         showNotification('Analysis completed successfully!', 'success');
-        
+
     } catch (error) {
         console.error('Analysis error:', error);
         showNotification(error.message || 'An error occurred during analysis', 'error');
-    } finally {
         showLoading(false);
     }
 }
@@ -395,6 +435,7 @@ function createReadabilityCard(readability) {
  * Clear all inputs and results
  */
 function clearAll() {
+    console.log('🗑️ clearAll() called');
     inputText.value = '';
     updateCounts();
     resultsPanel.style.display = 'none';
@@ -595,6 +636,7 @@ function exportResultsAsPDF() {
  * @param {boolean} show - Show or hide
  */
 function showLoading(show) {
+    console.log('⏳ showLoading:', show);
     if (show) {
         loadingOverlay.classList.add('active');
     } else {
@@ -924,9 +966,22 @@ const sampleTexts = [
 // });
 
 // Load history and theme from localStorage on page load
-window.addEventListener('load', () => {
+window.addEventListener('load', async () => {
     loadHistoryFromStorage();
     loadThemeFromStorage();
+
+    // Check if backend is available
+    if (typeof checkBackendHealth === 'function') {
+        backendAvailable = await checkBackendHealth();
+
+        if (backendAvailable) {
+            console.log('✅ Backend AI connected! Using advanced NLP models');
+            // showNotification('🚀 Backend AI connected! Using advanced NLP models', 'success');
+        } else {
+            console.log('💡 Using local AI engine');
+            // showNotification('💡 Using local AI engine', 'info');
+        }
+    }
 });
 
 /* ========================================

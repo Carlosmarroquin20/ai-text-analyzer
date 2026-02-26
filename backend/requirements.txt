@@ -1,0 +1,11 @@
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+pydantic==2.5.0
+python-multipart==0.0.6
+textblob==0.17.1
+spacy==3.7.2
+sqlalchemy==2.0.23
+python-dotenv==1.0.0
+transformers==4.35.2
+torch==2.1.1
+sentencepiece==0.1.99

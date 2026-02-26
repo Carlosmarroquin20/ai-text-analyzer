@@ -1,7 +1,21 @@
 {
   "permissions": {
     "allow": [
-      "Bash(dir:*)"
+      "Bash(dir:*)",
+      "Bash(.start.bat)",
+      "Bash(python main.py:*)",
+      "Bash(pip install:*)",
+      "Bash(python -m spacy:*)",
+      "Bash(python:*)",
+      "Bash(timeout /t 3)",
+      "Bash(ping:*)",
+      "Bash(nul)",
+      "Bash(curl:*)",
+      "Bash(start test-connection.html)",
+      "Bash(start index.html)",
+      "Bash(netstat:*)",
+      "Bash(findstr:*)",
+      "Bash(taskkill:*)"
     ],
     "deny": [],
     "ask": []
